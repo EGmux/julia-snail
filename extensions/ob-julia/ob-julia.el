@@ -84,7 +84,7 @@ your org notebook"
 
 (defun julia-snail/ob-julia--maybe-goto-char (char)
   (when char
-      (goto-char char)))
+    (goto-char char)))
 
 ;; This function was adapted from ob-julia-vterm by Shigeaki Nishina (GPL-v3)
 ;; https://github.com/shg/ob-julia-vterm.el as of April 14, 2022
@@ -120,11 +120,16 @@ your org notebook"
            (puthash (current-thread) pt-init julia-snail/ob-julia--point-inits)
            (puthash (current-thread) pt-init julia-snail/ob-julia--point-finals)
            (let ((res (apply old arguments)))
+             (search-forward "RESULTS:")
+             (next-line)
+             (beginning-of-line)
+             (delete-char 1)
+             (org-display-inline-images)
              (julia-snail/ob-julia--maybe-goto-char (gethash (current-thread) julia-snail/ob-julia--point-finals))
              (remhash (current-thread) julia-snail/ob-julia--point-inits)
              (remhash (current-thread) julia-snail/ob-julia--point-finals)
              res))))
-  (apply old arguments)))
+    (apply old arguments)))
 
 
 ;; Deal with colour ANSI escape colour codes
